@@ -27,7 +27,8 @@
 <!-- UPLOADS -->
 <script>
 let texts = [];
-
+document.getElementById("alphabetically").disabled = true;
+document.getElementById("regularOrder").disabled = true;
 
 let fileName = "";
 document.getElementById('inputfile')
@@ -84,9 +85,10 @@ assistantBool = false;
               assistant = texts.slice();
               wibBool = true;
             }
-            // if (wibBool && assistantBool){
-            //   identifyAsterickPatients();
-            // }
+            if (wibBool && assistantBool){
+              document.getElementById("alphabetically").disabled = false;
+              document.getElementById("regularOrder").disabled = false;
+            }
  }
 
 
