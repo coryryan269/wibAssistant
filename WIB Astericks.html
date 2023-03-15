@@ -1,29 +1,4 @@
-<html>
-<head>
-	<title>RETURNS</title>
-  <link rel="stylesheet" href="index.css">
-</head>
-<body>
-
-<!-- FILE UPLOAD DIV -->
-<div id="uploadFileDiv">
-
-<!-- UPLOAD BUTTON -->
-<BR><BR>
- <label for="inputfile">Upload:</label>
- <input type="file" name="inputfile"
-            id="inputfile" >
-
-<!-- BUTTONS FOR CONVERTING AND DOWNLOADING FORMATTED RESULTS (NOT RESULTS OF REPORTS RAN) -->
-<br><br><br>
-<!-- <button  onclick="identifyAsterickPatients()" disabled="true">CONVERT</button> -->
-<br><br><br>
-<a id="output" style="font-size: 18px;"></a>
-
-</body>
-
-<!-- UPLOADS -->
-<script>let texts = [];
+let texts = [];
 
 
 let fileName = "";
@@ -81,9 +56,9 @@ assistantBool = false;
               assistant = texts.slice();
               wibBool = true;
             }
-            if (wibBool && assistantBool){
-              identifyAsterickPatients();
-            }
+            // if (wibBool && assistantBool){
+            //   identifyAsterickPatients();
+            // }
  }
 
 
@@ -123,6 +98,7 @@ assistantBool = false;
 
 var glassPatients = [];
 function identifyAsterickPatients(){
+
   for (a = 0; a < assistant.length; a++){
     while (assistant[a].length < 4){
       assistant[a].push("jibber jabber");
@@ -134,24 +110,16 @@ function identifyAsterickPatients(){
       for (b = 0; b < assistant.length; b++){
         if (waitingInBin[a][3] == assistant[b][1]) {
           glassPatients[glassPatients.length-1].push(assistant[b][2].substring(1,assistant[b][2].length) + ", " + assistant[b][3].substring(1,assistant[b][3].length-1));
-          
-          
+          tab = 20-glassPatients[glassPatients.length-1][0].length;
+          tabs = "";
+          for (c = 0; c < tab; c++) tabs += "&nbsp;";
+          glassPatients[glassPatients.length-1][0] = glassPatients[glassPatients.length-1][0] + tabs;
           break;
         }
       }
-
-      for (aa = 0; aa < glassPatients.length; aa++){
-         if (glassPatients[aa][1] == undefined){
-            glassPatients[aa].push("<B><u><I>NO PATIENT FOUND</I></u><b>");
-        }
-
+      if (glassPatients[glassPatients.length-1].length != 2){
+        glassPatients[glassPatients.length-1].push ("<u><I>NO PATIENT FOUND</I></u>")
       }
-      tab = 20-glassPatients[glassPatients.length-1][0].length;
-          console.log(glassPatients[glassPatients.length-1])
-
-      tabs = "";
-      for (c = 0; c < tab; c++) tabs += "&nbsp;";
-          glassPatients[glassPatients.length-1][0] = glassPatients[glassPatients.length-1][0] + tabs;
       if (waitingInBin[a][3].substring(0,1) == "2"){
         glassPatients[glassPatients.length-1][0] = "<font color = \"red\">" + glassPatients[glassPatients.length-1][0]; 
         glassPatients[glassPatients.length-1][1] =  glassPatients[glassPatients.length-1][1] +  "</font>"; 
@@ -164,13 +132,45 @@ function identifyAsterickPatients(){
 
   newString = "";
   for (a = 0; a < glassPatients.length; a++){
-    newString += glassPatients[a][0] + glassPatients[a][1] + "<br>";
+    newString += glassPatients[a][0] + "\t" + glassPatients[a][1] + "<br>";
   }
   newString = "<tt>" + newString;
   newString = newString + "<tt>";
   document.getElementById("output").innerHTML = newString;
+  document.getElementById("alphabetically").disabled = true;
+  document.getElementById("regularOrder").disabled = true;
   
 
-}</script>
+}
 
-</html>
+function alphabetizePatients(){
+  identifyAsterickPatients();
+  done = false;
+  temp = ["",""];
+  while (done == false){
+    done = true;
+    for (a = 0; a < glassPatients.length-1; a++){
+        if (glassPatients[a][1] > glassPatients[a+1][1]){
+          done = false;
+          
+          temp[1] = glassPatients[a+1][1];
+          temp[0] = glassPatients[a+1][0];
+
+          glassPatients[a+1][0] = glassPatients[a][0];
+          glassPatients[a+1][1] = glassPatients[a][1];
+
+          glassPatients[a][0] = temp[0];
+          glassPatients[a][1] = temp[1];
+
+        }
+    }
+  }
+  newString = "";
+  for (a = 0; a < glassPatients.length; a++){
+    newString += glassPatients[a][0] + "\t" + glassPatients[a][1] + "<br>";
+  }
+  newString = "<tt>" + newString;
+  newString = newString + "<tt>";
+  document.getElementById("output").innerHTML = newString;
+  console.log("done alphabetizing");
+}
